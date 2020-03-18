@@ -44,9 +44,24 @@ namespace MemeWebsiteApi.Services
 
         public User Create(User user)
         {
-
+           
             _users.InsertOne(user);
             return user;
+        }
+
+        public bool CheckNickname(string nickname, string email)
+        {
+            _users1 = _users.Find(user => true).ToList();
+            var user = _users1.SingleOrDefault(x => x.Nickname == nickname || x.Email == email);
+            if (user == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true ;
+            }
+            
         }
 
         public User Authenticate(string username, string password)
@@ -89,5 +104,7 @@ namespace MemeWebsiteApi.Services
 
         public void Remove(string id) =>
             _users.DeleteOne(user => user.Id == id);
+
+
     }
 }
