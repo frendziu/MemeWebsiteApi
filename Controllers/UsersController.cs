@@ -5,11 +5,12 @@ using System.Threading.Tasks;
 using MemeWebsiteApi.Models;
 using MemeWebsiteApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MemeWebsiteApi.Controllers
 {
-
-    [Route("api/users")]
+       
+        [Route("api/users")]
         [ApiController]
         public class UsersController : ControllerBase
         {
@@ -40,12 +41,25 @@ namespace MemeWebsiteApi.Controllers
         [HttpPost("register")]
         public ActionResult<User> Create(User user)
         {
-                       
+            
              _userService.Create(user);
              return CreatedAtRoute("GetUser", new { id = user.Id.ToString() }, user);
         }
 
-            [HttpPut("{id:length(24)}")]
+        [AllowAnonymous]
+        [HttpPost("auth")]
+        public IActionResult Authenticate([FromBody]AuthenticateModel model)
+        {
+            var user = _userService.Authenticate(model.Username, model.Password);
+
+            if (user == null)
+                return BadRequest(new { message = "Username or password is incorrect" });
+
+            return Ok(user);
+        }
+
+
+        [HttpPut("{id:length(24)}")]
             public IActionResult Update(string id, User userIn)
             {
                 var user = _userService.Get(id);

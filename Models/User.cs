@@ -18,14 +18,14 @@ namespace MemeWebsiteApi.Models
         [StringLength(255), Required]
         public string Nickname { get; set; }
         [BsonElement("email")]
-        [EmailAddress, Required]
+        [EmailAddress]
         public string Email { get; set; }
         [BsonElement("password")]
-        [StringLength(255), Required]
+        [StringLength(255)]
         public string Password { get; set; }
         [BsonElement("rank")]
         public string Rank { get; set; } = "Guest";
-
+        public string Token { get; set; }
 
     }
 }
