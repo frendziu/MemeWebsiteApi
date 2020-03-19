@@ -49,10 +49,10 @@ namespace MemeWebsiteApi.Services
             return user;
         }
 
-        public bool CheckNickname(string nickname, string email)
+        public bool CheckNickname(string nickname)
         {
             _users1 = _users.Find(user => true).ToList();
-            var user = _users1.SingleOrDefault(x => x.Nickname == nickname || x.Email == email);
+            var user = _users1.SingleOrDefault(x => x.Nickname == nickname);
             if (user == null)
             {
                 return false;
@@ -62,6 +62,21 @@ namespace MemeWebsiteApi.Services
                 return true ;
             }
             
+        }
+
+        public bool CheckEmail(string email)
+        {
+            _users1 = _users.Find(user => true).ToList();
+            var user = _users1.SingleOrDefault(x => x.Email == email);
+            if (user == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+
         }
 
         public User Authenticate(string username, string password)

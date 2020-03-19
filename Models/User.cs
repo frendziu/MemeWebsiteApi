@@ -24,7 +24,7 @@ namespace MemeWebsiteApi.Models
         [StringLength(255)]
         public string Password { get; set; }
         [BsonElement("rank")]
-        public string Rank { get; set; } = "Guest";
+        public string Rank { get; set; } = "User";
         public string Token { get; set; }
 
     }

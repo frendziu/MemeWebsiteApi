@@ -37,12 +37,25 @@ namespace MemeWebsiteApi.Controllers
                 return tag;
             }
 
+            [HttpGet("get/order")]
+            public ActionResult<List<TagModel>> GetByOrder() =>
+            _tagService.GetInOrder();
+
             [HttpPost]
             public ActionResult<TagModel> Create(TagModel tag)
+            {
+            if (_tagService.CheckTag(tag.Name) == true)
+            {
+                return BadRequest(new { message = "Tag already exist" });
+
+            }
+            else 
             {
                 _tagService.Create(tag);
 
                 return CreatedAtRoute("GetTag", new { id = tag.Id.ToString() }, tag);
+            }
+           
             }
 
             [HttpPut("{id:length(24)}")]

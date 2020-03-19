@@ -41,15 +41,20 @@ namespace MemeWebsiteApi.Controllers
         [HttpPost("register")]
         public ActionResult<User> Create(User user)
         {
-            if (_userService.CheckNickname(user.Nickname, user.Email) == false)
+            if (_userService.CheckNickname(user.Nickname) == true)
             {
-                _userService.Create(user);
-                return CreatedAtRoute("GetUser", new { id = user.Id.ToString() }, user);
+                return BadRequest(new { message = "Nickname is taken" });
 
+            }
+            else if(_userService.CheckEmail(user.Email) == true)
+            {
+                return BadRequest(new { message = "Email is taken" });
             }
             else
             {
-                return BadRequest(new { message = "User data are taken" });
+                _userService.Create(user);
+                return CreatedAtRoute("GetUser", new { id = user.Id.ToString() }, user);
+               
             }
             
         }

@@ -10,6 +10,7 @@ namespace MemeWebsiteApi.Services
     public class TagService
     {
         private readonly IMongoCollection<TagModel> _tags;
+        private List<TagModel> _tags1 = new List<TagModel>();
 
         public TagService(IDatabaseSettings settings)
         {
@@ -20,6 +21,27 @@ namespace MemeWebsiteApi.Services
             _tags = database.GetCollection<TagModel>(settings.TagsCollectionName);
         }
 
+        public bool CheckTag(string name)
+        {
+            _tags1 = _tags.Find(tagModel => true).ToList();
+            var tagModel = _tags1.SingleOrDefault(x => x.Name == name);
+            if (tagModel == null)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+        public List<TagModel> GetInOrder()
+        {
+            _tags1 = _tags.Find(tagModel => true).ToList();
+            List<TagModel> SortedList = _tags1.OrderBy(x => x.Name).ToList();
+            return SortedList;
+        }
+ 
         public List<TagModel> Get() =>
             _tags.Find(tagModel => true).ToList();
 

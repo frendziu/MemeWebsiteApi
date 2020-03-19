@@ -17,20 +17,20 @@ namespace MemeWebsiteApi.Models
         public string Type { set; get; }
         [BsonElement("title"), StringLength(255), Required]
         public string Title { set; get; }
-        [BsonElement("tags"), StringLength(255), Required]
+        [BsonElement("tags"), Required]
         public string[] Tags { set; get; }
         [BsonElement("author"), StringLength(255), Required]
         public string Author { set; get; }
         [BsonElement("rating")]
-        public Rating[] Rating { set; get; }
+        public Rating Rating { set; get; }
         [BsonElement("date"), BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime Date { set; get; } = DateTime.Now;
     }
     public class Rating
     {
-        [BsonElement("value"),  Required]
-        public int Value { set; get; }
-        [BsonElement("voted"), StringLength(255), Required]
-        public string[] Type { set; get; }
+        [BsonElement("value")]
+        public int Value { set; get; } = 0;
+        [BsonElement("voted")]
+        public string[] Voted { set; get; }
     }
 }
