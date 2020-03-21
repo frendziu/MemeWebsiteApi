@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MemeWebsiteApi.Models;
 using MemeWebsiteApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using System.Web;
 
 namespace MemeWebsiteApi.Controllers
 {
@@ -84,28 +85,63 @@ namespace MemeWebsiteApi.Controllers
             int count = _memeService.GetCount();
             return count;
         }
-        // /api/memes/str?pagenumber=1?limit=1
-        [HttpGet("str")]
-        public ActionResult<List<Meme>>GetInPage(int pagenumber, int limit)
+        // /api/memes/page?number=1&limit=1
+        [HttpGet("page")]
+        public ActionResult<List<Meme>>GetInPage(int number, int limit)
         {
             List<Meme> memes = new List<Meme>();
 
-            if (pagenumber == 0)
+            if (number == 0)
             {
                 return BadRequest("There is no memes");
             }
-            else if (pagenumber < 0 || limit <= 0)
+            else if (number < 0 || limit <= 0)
             {
                 return BadRequest("Incorrect params");
             }
             else
             {
 
-                memes = _memeService.GetMemesPage(pagenumber, limit);
+                memes = _memeService.GetMemesPage(number, limit);
 
 
                 return memes;
 
+            }
+        }
+
+        // /api/memes/tag
+        [HttpGet("tags")]
+        public ActionResult<List<Meme>> GetByTags([FromQuery]string[] tags, int page, int limit)
+        {
+            List<Meme> memes = new List<Meme>();
+           
+            
+
+            if (page == 0)
+            {
+                return BadRequest("There is no memes");
+            }
+            else if (page < 0 || limit <= 0)
+            {
+                return BadRequest("Incorrect params");
+            }
+            else if (tags.Length==0)
+            {
+                return BadRequest("No tags");
+            }
+            else
+            {
+                memes = _memeService.GetByTags(tags, page, limit);
+                if (memes.Count == 0)
+                {
+                    return BadRequest("Thera are no memes with that tags");
+                }
+                else
+                {
+                    return memes;
+                }
+               
             }
         }
                

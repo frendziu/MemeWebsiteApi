@@ -12,6 +12,8 @@ namespace MemeWebsiteApi.Models
     {
         [BsonId, BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
+        [BsonElement("memeId"), Required]
+        public string memeId { set; get; }
         [BsonElement("author"), StringLength(255), Required]
         public string Author { set; get; }
         [BsonElement("content"), StringLength(255), Required]

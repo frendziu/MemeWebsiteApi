@@ -38,13 +38,22 @@ namespace MemeWebsiteApi.Services
 
         public List<Meme>GetMemesPage(int pagenumber, int limit)
         {
-            
-            List<Meme> helpList = new List<Meme>();
-            helpList = _memes.Find(meme => true).ToList();
-            List<Meme> SortedList = helpList.OrderByDescending(x => x.Date).Skip((pagenumber-1)*limit).Take(limit).ToList();
+
+            _memes1 = _memes.Find(meme => true).ToList();
+            List<Meme> SortedList = _memes1.OrderByDescending(x => x.Date).Skip((pagenumber-1)*limit).Take(limit).ToList();
             return SortedList;
         }
             
+        public List<Meme>GetByTags(string[] tags, int page, int limit)
+        {
+            _memes1 = _memes.Find(meme => meme.Tags == tags).ToList();
+            List<Meme> SortedList = _memes1
+                .OrderByDescending(x => x.Date)
+                .Skip((page - 1) * limit)
+                .Take(limit).ToList();
+            return SortedList;
+        }
+    
 
         public Meme Create(Meme meme)
         {
