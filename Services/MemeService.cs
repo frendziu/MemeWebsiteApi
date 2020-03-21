@@ -10,6 +10,7 @@ namespace MemeWebsiteApi.Services
     public class MemeService
     {
         private readonly IMongoCollection<Meme> _memes;
+        private List<Meme> _memes1 = new List<Meme>();
 
         public MemeService(IDatabaseSettings settings)
         {
@@ -26,10 +27,41 @@ namespace MemeWebsiteApi.Services
         public Meme Get(string id) =>
             _memes.Find<Meme>(meme => meme.Id == id).FirstOrDefault();
 
+        public int GetCount()
+        {
+            int count = 0;
+            _memes1 = _memes.Find(meme => true).ToList();
+            count = _memes1.Count();
+
+            return count;
+        }
+
+        public List<Meme>GetMemesPage(int pagenumber, int limit)
+        {
+            
+            List<Meme> helpList = new List<Meme>();
+            helpList = _memes.Find(meme => true).ToList();
+            List<Meme> SortedList = helpList.OrderByDescending(x => x.Date).Skip((pagenumber-1)*limit).Take(limit).ToList();
+            return SortedList;
+        }
+            
+
         public Meme Create(Meme meme)
         {
             _memes.InsertOne(meme);
             return meme;
+        }
+        
+        public void RatingPlus(string id, Meme memeIn)
+        {
+            memeIn.Rating.Value++;
+            _memes.ReplaceOne(meme => meme.Id == id, memeIn);
+        }
+
+        public void RatingMinus(string id, Meme memeIn)
+        {
+            memeIn.Rating.Value++;
+            _memes.ReplaceOne(meme => meme.Id == id, memeIn);
         }
 
         public void Update(string id, Meme memeIn) =>
