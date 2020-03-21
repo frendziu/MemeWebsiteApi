@@ -84,7 +84,7 @@ namespace MemeWebsiteApi.Controllers
             int count = _memeService.GetCount();
             return count;
         }
-        // /api/memes/str?pagenumber=1
+        // /api/memes/str?pagenumber=1?limit=1
         [HttpGet("str")]
         public ActionResult<List<Meme>>GetInPage(int pagenumber, int limit)
         {
