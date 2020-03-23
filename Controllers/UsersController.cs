@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Authorization;
 namespace MemeWebsiteApi.Controllers
 {
        
-        [Route("api/users")]
+        [Route("api")]
         [ApiController]
         public class UsersController : ControllerBase
         {
@@ -21,24 +21,71 @@ namespace MemeWebsiteApi.Controllers
             _userService = userService;
             }
 
-            [HttpGet()]
-            public ActionResult<List<User>> Get() =>
-                _userService.Get();
+        [HttpGet("admin")]
+        public ActionResult<List<User>> Get() =>
+           _userService.Get();
 
-            [HttpGet("{id:length(24)}", Name = "GetUser")]
-            public ActionResult<User> Get(string id)
+        // /api/admin/set-rank/1321313133?rank=Member
+        [HttpPut("admin/set-rank/{id:length(24)}")]
+        public IActionResult SetRank(string id, string rank)
+        {
+            var user = _userService.Get(id);
+            if (user == null)
             {
-                var user = _userService.Get(id);
-
-                if (user == null)
-                {
-                    return NotFound();
-                }
-
-                return user;
+                return NotFound();
             }
 
-        [HttpPost("register")]
+            if(rank != "Guest" && rank !="Member" && rank != "Admin")
+            {
+                return BadRequest("Incorrect rank");
+            }
+
+            _userService.SetRank(id, rank, user);
+
+            return NoContent();
+        }
+
+        [HttpPut("admin/ban/{id:length(24)}")]
+        public IActionResult BanById(string id)
+        {
+            var user = _userService.Get(id);
+            string rank = "Banned";
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (user.Rank == rank)
+            {
+                return BadRequest("This user is already banned");
+            }
+
+            _userService.SetRank(id, rank, user);
+
+            return NoContent();
+        }
+        // /api/admin/ban?nickname=1231231
+        [HttpPut("admin/ban")]
+        public IActionResult BanByNickname(string nickname)
+        {
+            var user = _userService.GetByNickname(nickname);
+            string rank = "Banned";
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            if (user.Rank == rank)
+            {
+                return BadRequest("This user is already banned");
+            }
+
+            _userService.SetRank(user.Id, rank, user);
+
+            return NoContent();
+        }
+        
+        [HttpPost("users/register")]
         public ActionResult<User> Create(User user)
         {
             if (_userService.CheckNickname(user.Nickname) == true)
@@ -60,7 +107,7 @@ namespace MemeWebsiteApi.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost("auth")]
+        [HttpPost("users/auth")]
         public IActionResult Authenticate([FromBody]AuthenticateModel model)
         {
             var user = _userService.Authenticate(model.Username, model.Password);
@@ -72,7 +119,22 @@ namespace MemeWebsiteApi.Controllers
         }
 
 
-        [HttpPut("{id:length(24)}")]
+        [HttpGet("users/{id:length(24)}", Name = "GetUser")]
+        public ActionResult<User> Get(string id)
+        {
+            var user = _userService.Get(id);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return user;
+        }
+
+
+
+        [HttpPut("users/{id:length(24)}")]
             public IActionResult Update(string id, User userIn)
             {
                 var user = _userService.Get(id);
@@ -87,7 +149,7 @@ namespace MemeWebsiteApi.Controllers
                 return NoContent();
             }
 
-            [HttpDelete("{id:length(24)}")]
+            [HttpDelete("users/{id:length(24)}")]
             public IActionResult Delete(string id)
             {
                 var user = _userService.Get(id);

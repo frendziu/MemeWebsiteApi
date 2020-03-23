@@ -42,6 +42,9 @@ namespace MemeWebsiteApi.Services
         public User Get(string id) =>
             _users.Find<User>(user => user.Id == id).FirstOrDefault();
 
+        public User GetByNickname(string nickname) =>
+            _users.Find<User>(user => user.Nickname == nickname).FirstOrDefault();
+
         public User Create(User user)
         {
            
@@ -78,6 +81,14 @@ namespace MemeWebsiteApi.Services
             }
 
         }
+
+        public void SetRank(string id, string rank, User user)
+        {
+            user.Rank = rank;
+            _users.ReplaceOne(user => user.Id == id, user);
+        }
+
+       
 
         public User Authenticate(string username, string password)
         {

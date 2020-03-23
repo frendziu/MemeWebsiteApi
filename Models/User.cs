@@ -15,7 +15,7 @@ namespace MemeWebsiteApi.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         [BsonElement("nickname")]
-        [StringLength(255), Required]
+        [StringLength(255)]
         public string Nickname { get; set; }
         [BsonElement("email")]
         [EmailAddress]

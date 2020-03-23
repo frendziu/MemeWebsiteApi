@@ -69,7 +69,7 @@ namespace MemeWebsiteApi.Services
 
         public void RatingMinus(string id, Meme memeIn)
         {
-            memeIn.Rating.Value++;
+            memeIn.Rating.Value--;
             _memes.ReplaceOne(meme => meme.Id == id, memeIn);
         }
 
