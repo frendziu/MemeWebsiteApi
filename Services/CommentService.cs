@@ -32,6 +32,11 @@ namespace MemeWebsiteApi.Services
             return comment;
         }
 
+        public List<Comment> GetMemeComments(string id)
+        {
+            return _comments.Find<Comment>(comment => comment.memeId == id).ToList();
+        }
+
         public void Update(string id, Comment commentIn) =>
             _comments.ReplaceOne(comment => comment.Id == id, commentIn);
 

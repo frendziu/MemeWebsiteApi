@@ -45,6 +45,17 @@ namespace MemeWebsiteApi.Controllers
                 return CreatedAtRoute("GetComment", new { id = comment.Id.ToString() }, comment);
             }
 
+        [HttpGet("getbyid")]
+        public ActionResult <List<Comment>> GetMemeComments(string id)
+        {
+            List<Comment> memeComments = new List <Comment>();
+
+            memeComments = _commentService.GetMemeComments(id);
+
+            return memeComments;
+
+        }
+
             [HttpPut("{id:length(24)}")]
             public IActionResult Update(string id, Comment commentIn)
             {

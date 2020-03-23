@@ -22,7 +22,7 @@ namespace MemeWebsiteApi.Models
         [BsonElement("author"), StringLength(255), Required]
         public string Author { set; get; }
         [BsonElement("rating")]
-        public Rating Rating { set; get; }
+        public Rating Rating { set; get; } = new Rating();
         [BsonElement("date"), BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime Date { set; get; } = DateTime.Now;
     }
