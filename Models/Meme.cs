@@ -25,6 +25,11 @@ namespace MemeWebsiteApi.Models
         public Rating Rating { set; get; } = new Rating();
         [BsonElement("date"), BsonDateTimeOptions(Kind = DateTimeKind.Local)]
         public DateTime Date { set; get; } = DateTime.Now;
+        [BsonElement("FilePath")]
+        public string FilePath { get; set; }
+        [BsonElement("FileName"), Required]
+        public string FileName { get; set; }
+       
     }
     public class Rating
     {
@@ -33,4 +38,5 @@ namespace MemeWebsiteApi.Models
         [BsonElement("voted")]
         public string[] Voted { set; get; }
     }
+
 }

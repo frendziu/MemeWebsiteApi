@@ -156,3 +156,4 @@ C:\Users\kamil\source\repos\MemeWebsiteApi\bin\Debug\netcoreapp3.1\Microsoft.Asp
 C:\Users\kamil\source\repos\MemeWebsiteApi\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Protocols.dll
 C:\Users\kamil\source\repos\MemeWebsiteApi\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
 C:\Users\kamil\source\repos\MemeWebsiteApi\obj\Debug\netcoreapp3.1\MemeWebsiteApi.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\kamil\source\repos\MemeWebsiteApi\bin\Debug\netcoreapp3.1\MongoDB.Driver.GridFS.dll

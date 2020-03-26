@@ -40,6 +40,7 @@ namespace MemeWebsiteApi.Controllers
             [HttpPost]
             public ActionResult<Comment> Create(Comment comment)
             {
+                
                 _commentService.Create(comment);
 
                 return CreatedAtRoute("GetComment", new { id = comment.Id.ToString() }, comment);

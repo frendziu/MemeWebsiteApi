@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using MemeWebsiteApi.Models;
 using MongoDB.Driver;
+using MongoDB.Driver.GridFS;
+using System.IO;
 
 namespace MemeWebsiteApi.Services
 {
@@ -19,6 +21,7 @@ namespace MemeWebsiteApi.Services
             var database = client.GetDatabase(settings.DatabaseName);
 
             _memes = database.GetCollection<Meme>(settings.MemesCollectionName);
+
         }
 
         public List<Meme> Get() =>
@@ -50,10 +53,30 @@ namespace MemeWebsiteApi.Services
             List<Meme> SortedList = _memes1
                 .OrderByDescending(x => x.Date)
                 .Skip((page - 1) * limit)
-                .Take(limit).ToList();
+                .Take(limit)
+                .ToList();
             return SortedList;
         }
-    
+
+        public Meme Upload(Meme meme)
+        {
+            string targetFile = "Images/UploadedImages/" + meme.FileName + "." + meme.Type;
+            string sourceFile = "Images/SourceImages/" + meme.FileName + "." + meme.Type;
+           
+           
+            _memes.InsertOne(meme);
+            
+            string uploadedFIle = "Images/UploadedImages/" + meme.Id + "." + meme.Type;
+            meme.FileName = uploadedFIle;
+            Update(meme.Id, meme);
+            File.Copy(sourceFile, targetFile);
+            File.Move(targetFile, uploadedFIle );
+
+           return meme;
+        }
+
+        
+
 
         public Meme Create(Meme meme)
         {
@@ -79,7 +102,10 @@ namespace MemeWebsiteApi.Services
         public void Remove(Meme memeIn) =>
             _memes.DeleteOne(meme => meme.Id == memeIn.Id);
 
-        public void Remove(string id) =>
+        public void Remove(string id, string type)
+        {
+            File.Delete("Images/UploadedImages/" + id + "." + type);
             _memes.DeleteOne(meme => meme.Id == id);
+        }
     }
 }

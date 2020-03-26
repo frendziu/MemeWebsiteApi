@@ -6,6 +6,8 @@ using MemeWebsiteApi.Models;
 using MemeWebsiteApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Web;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace MemeWebsiteApi.Controllers
 {
@@ -14,6 +16,7 @@ namespace MemeWebsiteApi.Controllers
     [ApiController]
     public class MemesController : ControllerBase
     {
+    
         private readonly MemeService _memeService;
 
         public MemesController(MemeService memeService)
@@ -38,10 +41,11 @@ namespace MemeWebsiteApi.Controllers
             return meme;
         }
 
-        [HttpPost]
-        public ActionResult<Meme> Create(Meme meme)
+
+       [HttpPost]
+       public ActionResult<Meme> Upload(Meme meme)
         {
-            _memeService.Create(meme);
+            _memeService.Upload(meme);
 
             return CreatedAtRoute("GetMeme", new { id = meme.Id.ToString() }, meme);
         }
@@ -156,7 +160,7 @@ namespace MemeWebsiteApi.Controllers
                     return NotFound();
                 }
 
-            _memeService.Remove(meme.Id);
+            _memeService.Remove(meme.Id, meme.Type);
 
                 return NoContent();
             }
