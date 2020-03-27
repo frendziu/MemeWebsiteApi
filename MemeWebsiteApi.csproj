@@ -5,13 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Images\UploadedImages\5e7cd7aaeb26233604480f4c.jpg\**" />
-    <Content Remove="Images\UploadedImages\5e7cd7aaeb26233604480f4c.jpg\**" />
-    <EmbeddedResource Remove="Images\UploadedImages\5e7cd7aaeb26233604480f4c.jpg\**" />
-    <None Remove="Images\UploadedImages\5e7cd7aaeb26233604480f4c.jpg\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.2" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.1" />
