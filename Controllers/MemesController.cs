@@ -50,9 +50,13 @@ namespace MemeWebsiteApi.Controllers
             {
                 return NotFound();
             }
+            string filename = id + "." + meme.Type;
 
-            Byte[] b = System.IO.File.ReadAllBytes("Images/UploadedImages/" + id + ".jpg");   // You can use your own method over here.         
-            return File(b, "image/jpeg");
+            Byte[] b = System.IO.File.ReadAllBytes("Images/UploadedImages/" + filename); // You can use your own method over here.  
+                if (meme.Type == "mp4")
+            return File(b, "video/mp4");
+                else
+                return File(b, "image/jpeg");
         }
 
         [HttpPost]
