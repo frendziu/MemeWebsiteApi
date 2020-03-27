@@ -22,9 +22,23 @@ namespace MemeWebsiteApi.Controllers
             }
 
         [HttpGet("admin")]
-        public ActionResult<List<User>> Get() =>
-           _userService.Get();
+        public ActionResult<List<User>> Get()
+        {
+            var currentUser = HttpContext.User;
 
+            
+
+            if(currentUser.HasClaim(user => user.Type == "Rank" && user.Value == "Admin"))
+            {
+                List<User> users = new List<User>();
+                return users = _userService.Get();
+            }
+            else 
+            {
+                return BadRequest("Not permission");
+            }
+
+        }
         // /api/admin/set-rank/1321313133?rank=Member
         [HttpPut("admin/set-rank/{id:length(24)}")]
         public IActionResult SetRank(string id, string rank)

@@ -28,7 +28,7 @@ namespace MemeWebsiteApi.Controllers
         public ActionResult<List<Meme>> Get() =>
             _memeService.Get();
 
-        [HttpGet("single/{id:length(24)}", Name = "GetMeme")]
+        [HttpGet("get/{id:length(24)}", Name = "GetMeme")]
         public ActionResult<Meme> Get(string id)
         {
             var meme = _memeService.Get(id);
@@ -41,8 +41,22 @@ namespace MemeWebsiteApi.Controllers
             return meme;
         }
 
+        [HttpGet("single/{id:length(24)}")]
+        public IActionResult GetSingle(string id)
+        {
+            var meme = _memeService.Get(id);
 
-       [HttpPost]
+            if (meme == null)
+            {
+                return NotFound();
+            }
+
+            Byte[] b = System.IO.File.ReadAllBytes("Images/UploadedImages/"+ id + ".jpg");   // You can use your own method over here.         
+            return File(b, "image/jpeg");
+        }
+
+
+        [HttpPost]
        public ActionResult<Meme> Upload(Meme meme)
         {
             _memeService.Upload(meme);
@@ -114,7 +128,7 @@ namespace MemeWebsiteApi.Controllers
             }
         }
 
-        // /api/memes/tag
+        // /api/memes/tags?tags="XD"&tags="Funny"&page=1&limit=5
         [HttpGet("tags")]
         public ActionResult<List<Meme>> GetByTags([FromQuery]string[] tags, int page, int limit)
         {
@@ -124,7 +138,7 @@ namespace MemeWebsiteApi.Controllers
 
             if (page == 0)
             {
-                return BadRequest("There is no memes");
+                return BadRequest("There are no memes");
             }
             else if (page < 0 || limit <= 0)
             {
@@ -139,7 +153,7 @@ namespace MemeWebsiteApi.Controllers
                 memes = _memeService.GetByTags(tags, page, limit);
                 if (memes.Count == 0)
                 {
-                    return BadRequest("Thera are no memes with that tags");
+                    return BadRequest("There are no memes with that tags");
                 }
                 else
                 {
