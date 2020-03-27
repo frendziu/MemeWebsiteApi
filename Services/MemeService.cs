@@ -49,7 +49,6 @@ namespace MemeWebsiteApi.Services
             
         public List<Meme>GetByTags(string[] tags, int page, int limit)
         {
-            
             _memes1 = _memes.Find(meme => meme.Tags == tags).ToList();
             List<Meme> SortedList = _memes1
                 .OrderByDescending(x => x.Date)
@@ -68,7 +67,7 @@ namespace MemeWebsiteApi.Services
             _memes.InsertOne(meme);
             
             string uploadedFIle = "Images/UploadedImages/" + meme.Id + "." + meme.Type;
-            meme.FilePath = uploadedFIle;
+            meme.FileName = uploadedFIle;
             Update(meme.Id, meme);
             File.Copy(sourceFile, targetFile);
             File.Move(targetFile, uploadedFIle );
