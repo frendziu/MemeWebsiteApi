@@ -28,7 +28,7 @@ namespace MemeWebsiteApi.Controllers
         public ActionResult<List<Meme>> Get() =>
             _memeService.Get();
 
-        [HttpGet("single/{id:length(24)}", Name = "GetMeme")]
+        [HttpGet("get/{id:length(24)}", Name = "GetMeme")]
         public ActionResult<Meme> Get(string id)
         {
             var meme = _memeService.Get(id);
@@ -41,8 +41,21 @@ namespace MemeWebsiteApi.Controllers
             return meme;
         }
 
+        [HttpGet("single/{id:length(24)}")]
+        public IActionResult GetSingle(string id)
+        {
+            var meme = _memeService.Get(id);
 
-       [HttpPost]
+            if (meme == null)
+            {
+                return NotFound();
+            }
+
+            Byte[] b = System.IO.File.ReadAllBytes("Images/UploadedImages/" + id + ".jpg");   // You can use your own method over here.         
+            return File(b, "image/jpeg");
+        }
+
+        [HttpPost]
        public ActionResult<Meme> Upload(Meme meme)
         {
             _memeService.Upload(meme);
