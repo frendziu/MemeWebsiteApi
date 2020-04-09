@@ -16,7 +16,7 @@ namespace MemeWebsiteApi.Controllers
     [ApiController]
     public class MemesController : ControllerBase
     {
-    
+
         private readonly MemeService _memeService;
 
         public MemesController(MemeService memeService)
@@ -50,6 +50,8 @@ namespace MemeWebsiteApi.Controllers
             {
                 return NotFound();
             }
+
+            
             string filename = id + "." + meme.Type;
 
             Byte[] b = System.IO.File.ReadAllBytes("Images/UploadedImages/" + filename); // You can use your own method over here.  
@@ -62,6 +64,10 @@ namespace MemeWebsiteApi.Controllers
         [HttpPost]
        public ActionResult<Meme> Upload(Meme meme)
         {
+            if (meme.Type != "mp4" && meme.Type != "jpg" && meme.Type != "gif" && meme.Type != "png")
+            {
+                return BadRequest("Bad meme type");
+            }
             _memeService.Upload(meme);
 
             return CreatedAtRoute("GetMeme", new { id = meme.Id.ToString() }, meme);

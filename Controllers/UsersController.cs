@@ -9,33 +9,74 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace MemeWebsiteApi.Controllers
 {
-       
-        [Route("api")]
-        [ApiController]
-        public class UsersController : ControllerBase
+    
+    [Route("api")]
+    [ApiController]
+    public class UsersController : ControllerBase
+    {
+        private readonly UserService _userService;
+
+        public UsersController(UserService userService)
         {
-            private readonly UserService _userService;
-
-            public UsersController(UserService userService)
-            {
             _userService = userService;
-            }
+        }
 
-        [HttpGet("admin")]
+        protected string GetUserRank()
+        {
+            return this.User.Claims.First(i => i.Type == "UserRank").Value;
+        }
+
+        [HttpGet("all")]
         public ActionResult<List<User>> Get() =>
            _userService.Get();
 
+        [Authorize]
+        [HttpGet("admin")]
+        public IActionResult GetAll()
+        {
+            string rank = GetUserRank();
+
+            if(rank == null)
+            {
+                return BadRequest("Invalid Token");
+            }
+
+           if(rank == "Admin")
+                {
+                var users = _userService.GetAll();
+                return Ok(users);
+            }
+            else 
+            {
+                return BadRequest("No permission");            
+            }
+           
+
+        }
+
+       
+
+        [Authorize]
         // /api/admin/set-rank/1321313133?rank=Member
         [HttpPut("admin/set-rank/{id:length(24)}")]
-        public IActionResult SetRank(string id, string rank)
+        public IActionResult SetRank(string id, string rank1)
         {
-            var user = _userService.Get(id);
+            string rank = GetUserRank();
+
+            if (rank == null)
+            {
+                return BadRequest("Invalid Token");
+            }
+
+            if (rank == "Admin")
+                {
+                 var user = _userService.Get(id);
             if (user == null)
             {
                 return NotFound();
             }
 
-            if(rank != "Guest" && rank !="Member" && rank != "Admin")
+            if(rank1 != "Guest" && rank1 !="Member" && rank1 != "Admin")
             {
                 return BadRequest("Incorrect rank");
             }
@@ -43,46 +84,87 @@ namespace MemeWebsiteApi.Controllers
             _userService.SetRank(id, rank, user);
 
             return NoContent();
+                }
+            else
+            {
+                return BadRequest("No permission");
+            }
+           
         }
-
+        [Authorize]
         [HttpPut("admin/ban/{id:length(24)}")]
         public IActionResult BanById(string id)
         {
-            var user = _userService.Get(id);
-            string rank = "Banned";
-            if (user == null)
+            string rank = GetUserRank();
+
+            if (rank == null)
             {
-                return NotFound();
+                return BadRequest("Invalid Token");
             }
 
-            if (user.Rank == rank)
+            if (rank == "Admin")
             {
-                return BadRequest("This user is already banned");
+                var user = _userService.Get(id);
+                string rank1 = "Banned";
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                if (user.Rank == rank1)
+                {
+                    return BadRequest("This user is already banned");
+                }
+
+                _userService.SetRank(id, rank1, user);
+
+                return NoContent();
+            }
+            else
+            {
+                return BadRequest("No permission");
             }
 
-            _userService.SetRank(id, rank, user);
 
-            return NoContent();
+
+           
         }
+        [Authorize]
         // /api/admin/ban?nickname=1231231
         [HttpPut("admin/ban")]
         public IActionResult BanByNickname(string nickname)
         {
-            var user = _userService.GetByNickname(nickname);
-            string rank = "Banned";
-            if (user == null)
+            string rank = GetUserRank();
+
+            if (rank == null)
             {
-                return NotFound();
+                return BadRequest("Invalid Token");
             }
 
-            if (user.Rank == rank)
+            if (rank == "Admin")
             {
-                return BadRequest("This user is already banned");
+                var user = _userService.GetByNickname(nickname);
+                string rank1 = "Banned";
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                if (user.Rank == rank1)
+                {
+                    return BadRequest("This user is already banned");
+                }
+
+                _userService.SetRank(user.Id, rank1, user);
+
+                return NoContent();
+            }
+            else
+            {
+                return BadRequest("No permission");
             }
 
-            _userService.SetRank(user.Id, rank, user);
-
-            return NoContent();
+           
         }
         
         [HttpPost("users/register")]

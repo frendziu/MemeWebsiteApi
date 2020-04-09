@@ -106,7 +106,8 @@ namespace MemeWebsiteApi.Services
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                    new Claim("UserId", user.Id.ToString()),
+                    new Claim("UserRank", user.Rank)
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
@@ -115,6 +116,23 @@ namespace MemeWebsiteApi.Services
             user.Token = tokenHandler.WriteToken(token);
 
             return user.WithoutPassword();
+        }
+       
+       
+
+        public bool IsAdmin()
+             
+        {
+            _users1 = _users.Find(user => true).ToList();
+            if (_users1.Any(u => u.Rank == "Admin"))
+            { 
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+
         }
 
         public IEnumerable<User> GetAll()
