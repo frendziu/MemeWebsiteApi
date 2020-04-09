@@ -58,16 +58,16 @@ namespace MemeWebsiteApi.Services
             return SortedList;
         }
 
-        public Meme Upload(Meme meme)
+        public Meme Upload(Meme meme, string nickname)
         {
             string targetFile = "Images/UploadedImages/" + meme.FileName + "." + meme.Type;
             string sourceFile = "Images/SourceImages/" + meme.FileName + "." + meme.Type;
-           
-           
+
+            meme.AddedBy = nickname;
             _memes.InsertOne(meme);
             
             string uploadedFIle = "Images/UploadedImages/" + meme.Id + "." + meme.Type;
-            meme.FileName = uploadedFIle;
+            meme.FilePath = uploadedFIle;
             Update(meme.Id, meme);
             File.Copy(sourceFile, targetFile);
             File.Move(targetFile, uploadedFIle );

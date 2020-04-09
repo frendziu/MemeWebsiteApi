@@ -29,6 +29,9 @@ namespace MemeWebsiteApi.Models
         public string FilePath { get; set; }
         [BsonElement("FileName"), Required]
         public string FileName { get; set; }
+        [BsonElement("AddedBy")]
+        public string AddedBy { get; set; }
+        
        
     }
     public class Rating

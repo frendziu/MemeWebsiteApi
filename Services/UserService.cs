@@ -82,6 +82,14 @@ namespace MemeWebsiteApi.Services
 
         }
 
+        public string GetUserNameById(string Id)
+        {
+            _users1 = _users.Find(user => true).ToList();
+            var user = _users1.SingleOrDefault(x => x.Id == Id);
+            string nickname = user.Nickname;
+            return nickname;
+        }
+
         public void SetRank(string id, string rank, User user)
         {
             user.Rank = rank;
@@ -120,20 +128,7 @@ namespace MemeWebsiteApi.Services
        
        
 
-        public bool IsAdmin()
-             
-        {
-            _users1 = _users.Find(user => true).ToList();
-            if (_users1.Any(u => u.Rank == "Admin"))
-            { 
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
-        }
+      
 
         public IEnumerable<User> GetAll()
         {

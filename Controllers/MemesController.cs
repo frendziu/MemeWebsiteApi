@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Web;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MemeWebsiteApi.Controllers
 {
@@ -18,10 +19,17 @@ namespace MemeWebsiteApi.Controllers
     {
 
         private readonly MemeService _memeService;
+        private readonly UserService _userService;
 
-        public MemesController(MemeService memeService)
+        protected string GetUserId()
+        {
+            return this.User.Claims.First(i => i.Type == "UserId").Value;
+        }
+
+        public MemesController(MemeService memeService, UserService userService)
         {
             _memeService = memeService;
+            _userService = userService;
         }
 
         [HttpGet("get")]
@@ -60,7 +68,7 @@ namespace MemeWebsiteApi.Controllers
                 else
                 return File(b, "image/jpeg");
         }
-
+        [Authorize]
         [HttpPost]
        public ActionResult<Meme> Upload(Meme meme)
         {
@@ -68,7 +76,11 @@ namespace MemeWebsiteApi.Controllers
             {
                 return BadRequest("Bad meme type");
             }
-            _memeService.Upload(meme);
+            string Id = GetUserId();
+            string nickname = _userService.GetUserNameById(Id);
+                       
+
+            _memeService.Upload(meme, nickname);
 
             return CreatedAtRoute("GetMeme", new { id = meme.Id.ToString() }, meme);
         }
