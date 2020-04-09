@@ -6,6 +6,8 @@ using MemeWebsiteApi.Models;
 using MemeWebsiteApi.Services;
 using Microsoft.AspNetCore.Mvc;
 
+using Microsoft.AspNetCore.Authorization;
+
 namespace MemeWebsiteApi.Controllers
 {
 
@@ -20,7 +22,12 @@ namespace MemeWebsiteApi.Controllers
             _tagService = tagService;
             }
 
-            [HttpGet("get")]
+            protected string GetUserRank()
+            {
+            return this.User.Claims.First(i => i.Type == "UserRank").Value;
+            }
+
+        [HttpGet("get")]
             public ActionResult<List<TagModel>> Get() =>
                 _tagService.Get();
 
@@ -72,9 +79,19 @@ namespace MemeWebsiteApi.Controllers
 
                 return NoContent();
             }
-
+            [Authorize]
             [HttpDelete("{id:length(24)}")]
             public IActionResult Delete(string id)
+            {
+               
+            string rank = GetUserRank();
+
+            if (rank == null)
+            {
+                return BadRequest("Invalid Token");
+            }
+
+            if (rank == "Admin")
             {
                 var tag = _tagService.Get(id);
 
@@ -83,9 +100,15 @@ namespace MemeWebsiteApi.Controllers
                     return NotFound();
                 }
 
-            _tagService.Remove(tag.Id);
+                _tagService.Remove(tag.Id);
 
                 return NoContent();
+
             }
+            else
+            {
+                return BadRequest("No permission");
+            }
+        }
         }
 }
