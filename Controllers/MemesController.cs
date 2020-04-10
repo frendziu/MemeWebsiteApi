@@ -20,16 +20,18 @@ namespace MemeWebsiteApi.Controllers
 
         private readonly MemeService _memeService;
         private readonly UserService _userService;
+        private readonly TagService _tagService;
 
         protected string GetUserId()
         {
             return this.User.Claims.First(i => i.Type == "UserId").Value;
         }
 
-        public MemesController(MemeService memeService, UserService userService)
+        public MemesController(MemeService memeService, UserService userService, TagService tagService)
         {
             _memeService = memeService;
             _userService = userService;
+            _tagService = tagService;
         }
 
         [HttpGet("get")]
@@ -70,12 +72,39 @@ namespace MemeWebsiteApi.Controllers
         }
         [Authorize]
         [HttpPost]
-       public ActionResult<Meme> Upload(Meme meme)
+        public ActionResult<Meme> Upload(Meme meme)
         {
             if (meme.Type != "mp4" && meme.Type != "jpg" && meme.Type != "gif" && meme.Type != "png")
             {
                 return BadRequest("Bad meme type");
             }
+
+            bool[] isTag = new bool[_tagService.GetCount()];
+            bool isTagExist = true;
+            for (int i = 0; i<isTag.Length; i++)
+            {
+                isTag[i] = true;
+            }
+            for (int i = 0; i < meme.Tags.Length; i++)
+            {
+                isTag[i] = _tagService.CheckTag(meme.Tags[i]);
+            }
+
+            for (int i = 0; i < isTag.Length; i++)
+            {
+                if(isTag[i] == false)
+                {
+                    isTagExist = false;
+                }
+                
+            }
+
+
+            if (isTagExist == false)
+            {
+                return BadRequest("Invalid Tag");
+            }
+
             string Id = GetUserId();
             string nickname = _userService.GetUserNameById(Id);
                        

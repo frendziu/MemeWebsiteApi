@@ -35,6 +35,15 @@ namespace MemeWebsiteApi.Services
             }
         }
 
+        public int GetCount()
+        {
+            int count = 0;
+            _tags1 = _tags.Find(meme => true).ToList();
+            count = _tags1.Count();
+
+            return count;
+        }
+
         public List<TagModel> GetInOrder()
         {
             _tags1 = _tags.Find(tagModel => true).ToList();
