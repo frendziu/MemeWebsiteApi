@@ -87,7 +87,7 @@ namespace MemeWebsiteApi.Controllers
 
 
 
-
+        [Authorize]
         [HttpPut("rateplus/{id:length(24)}")]
         public IActionResult RPlus(string id)
         {
@@ -97,12 +97,22 @@ namespace MemeWebsiteApi.Controllers
             {
                 return NotFound();
             }
-
-            _memeService.RatingPlus(id, meme);
+            string Id = GetUserId();
+            string nickname = _userService.GetUserNameById(Id);
+            bool alreadyExist = meme.Rating.Voted.Contains(nickname);
+            if (alreadyExist == true)
+            {
+                return BadRequest("User voted");
+            }
+            else
+            {
+                _memeService.RatingPlus(id, meme, nickname);
+            }
+            
 
             return NoContent();
         }
-
+        [Authorize]
         [HttpPut("rateminus/{id:length(24)}")]
         public IActionResult RMinus(string id)
         {
@@ -112,8 +122,18 @@ namespace MemeWebsiteApi.Controllers
             {
                 return NotFound();
             }
-
-            _memeService.RatingMinus(id, meme);
+            string Id = GetUserId();
+            string nickname = _userService.GetUserNameById(Id);
+            bool alreadyExist = meme.Rating.Voted.Contains(nickname);
+            if (alreadyExist == true)
+            {
+                return BadRequest("User voted");
+            }
+            else
+            {
+                _memeService.RatingMinus(id, meme, nickname);
+            }
+            
 
             return NoContent();
         }

@@ -39,7 +39,7 @@ namespace MemeWebsiteApi.Models
         [BsonElement("value")]
         public int Value { set; get; } = 0;
         [BsonElement("voted")]
-        public string[] Voted { set; get; }
+        public List<string> Voted { set; get; } = new List<string>();
     }
 
 }

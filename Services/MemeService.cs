@@ -84,15 +84,18 @@ namespace MemeWebsiteApi.Services
             return meme;
         }
         
-        public void RatingPlus(string id, Meme memeIn)
+        public void RatingPlus(string id, Meme memeIn, string nickname)
         {
             memeIn.Rating.Value++;
+            memeIn.Rating.Voted.Add(nickname);
             _memes.ReplaceOne(meme => meme.Id == id, memeIn);
         }
 
-        public void RatingMinus(string id, Meme memeIn)
+        public void RatingMinus(string id, Meme memeIn, string nickname)
         {
             memeIn.Rating.Value--;
+            
+            memeIn.Rating.Voted.Add(nickname);
             _memes.ReplaceOne(meme => meme.Id == id, memeIn);
         }
 
