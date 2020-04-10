@@ -26,8 +26,9 @@ namespace MemeWebsiteApi.Services
         public Comment Get(string id) =>
             _comments.Find<Comment>(comment => comment.Id == id).FirstOrDefault();
 
-        public Comment Create(Comment comment)
+        public Comment Create(Comment comment, string nickname)
         {
+            comment.Author = nickname;
             _comments.InsertOne(comment);
             return comment;
         }

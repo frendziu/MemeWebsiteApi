@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MemeWebsiteApi.Models;
 using MemeWebsiteApi.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MemeWebsiteApi.Controllers
 {
@@ -14,13 +15,20 @@ namespace MemeWebsiteApi.Controllers
         public class CommentsController : ControllerBase
         {
             private readonly CommentService _commentService;
+        private readonly UserService _userService;
 
-            public CommentsController(CommentService commentService)
+        public CommentsController(CommentService commentService, UserService userService)
             {
             _commentService = commentService;
-            }
+            _userService = userService;
+        }
 
-            [HttpGet("get")]
+        protected string GetUserId()
+        {
+            return this.User.Claims.First(i => i.Type == "UserId").Value;
+        }
+
+        [HttpGet("get")]
             public ActionResult<List<Comment>> Get() =>
                 _commentService.Get();
 
@@ -36,12 +44,14 @@ namespace MemeWebsiteApi.Controllers
 
                 return comment;
             }
-
+            [Authorize]
             [HttpPost]
             public ActionResult<Comment> Create(Comment comment)
             {
-                
-                _commentService.Create(comment);
+            string Id = GetUserId();
+            string nickname = _userService.GetUserNameById(Id);
+
+            _commentService.Create(comment, nickname);
 
                 return CreatedAtRoute("GetComment", new { id = comment.Id.ToString() }, comment);
             }
