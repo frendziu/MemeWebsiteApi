@@ -208,7 +208,7 @@ namespace MemeWebsiteApi.Controllers
 
             if (page == 0)
             {
-                return BadRequest("There is no memes");
+                return BadRequest("There are no memes");
             }
             else if (page < 0 || limit <= 0)
             {
@@ -223,7 +223,7 @@ namespace MemeWebsiteApi.Controllers
                 memes = _memeService.GetByTags(tags, page, limit);
                 if (memes.Count == 0)
                 {
-                    return BadRequest("Thera are no memes with that tags");
+                    return BadRequest("There are no memes with that tags");
                 }
                 else
                 {

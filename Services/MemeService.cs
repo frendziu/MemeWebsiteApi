@@ -49,8 +49,12 @@ namespace MemeWebsiteApi.Services
             
         public List<Meme>GetByTags(string[] tags, int page, int limit)
         {
-            _memes1 = _memes.Find(meme => meme.Tags == tags).ToList();
+            _memes1 = _memes.Find(meme => true).ToList();
+
+            
+           
             List<Meme> SortedList = _memes1
+                .Where(meme => meme.Tags.Any(x=> tags.Contains(x)))
                 .OrderByDescending(x => x.Date)
                 .Skip((page - 1) * limit)
                 .Take(limit)
