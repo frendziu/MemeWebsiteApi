@@ -28,7 +28,7 @@ namespace MemeWebsiteApi.Controllers
             return this.User.Claims.First(i => i.Type == "UserId").Value;
         }
 
-        [HttpGet("get")]
+            [HttpGet("get")]
             public ActionResult<List<Comment>> Get() =>
                 _commentService.Get();
 

@@ -195,7 +195,7 @@ namespace MemeWebsiteApi.Controllers
             var user = _userService.Authenticate(model.Username, model.Password);
 
             if (user == null)
-                return BadRequest(new { message = "Username or password is incorrect" });
+                return BadRequest(new { message = "Incorrect" });
 
             return Ok(user);
         }
